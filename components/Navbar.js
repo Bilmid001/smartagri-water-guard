@@ -1,7 +1,7 @@
 'use client';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Sprout, Moon, Sun, Menu, X } from 'lucide-react';
+import { Sprout, Moon, Sun, Menu, X, ArrowRight } from 'lucide-react';
 import { useTheme } from '@/context/ThemeContext';
 import { useState } from 'react';
 
@@ -53,6 +53,8 @@ export default function Navbar() {
           >
             {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
           </button>
+          <Link href="/login" className="ml-2 px-3 py-2 text-sm font-semibold text-earth-700 dark:text-earth-200 hover:text-brand-700">Sign in</Link>
+          <Link href="/register" className="ml-1 inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-brand-600 text-white text-sm font-semibold hover:bg-brand-700">Get started <ArrowRight size={15}/></Link>
         </div>
 
         <button
@@ -79,6 +81,10 @@ export default function Navbar() {
               {l.label}
             </Link>
           ))}
+          <div className="flex gap-2 pt-2">
+            <Link href="/login" onClick={() => setOpen(false)} className="flex-1 text-center px-4 py-2 rounded-lg border border-earth-200 dark:border-earth-700 text-sm font-semibold">Sign in</Link>
+            <Link href="/register" onClick={() => setOpen(false)} className="flex-1 text-center px-4 py-2 rounded-lg bg-brand-600 text-white text-sm font-semibold">Get started</Link>
+          </div>
           <button onClick={toggle} className="w-full text-left px-4 py-2 rounded-lg hover:bg-earth-100 dark:hover:bg-earth-700 text-sm">
             {theme === 'dark' ? '☀️ Light mode' : '🌙 Dark mode'}
           </button>
