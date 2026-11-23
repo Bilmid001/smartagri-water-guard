@@ -1,6 +1,6 @@
 # SmartAgri Water Guard
 
-SmartAgri Water Guard is a Next.js irrigation decision-support app. It uses crop-specific baseline water needs and entered field conditions to produce an explainable watering recommendation. The landing page includes product photography and an illustrative dashboard preview; account registration and login use Supabase Auth.
+SmartAgri Water Guard is a Next.js irrigation decision-support app. It uses crop-specific baseline water needs and entered field conditions to produce an explainable watering recommendation. The landing page includes product photography and an illustrative dashboard preview; account registration and login use browser-local storage.
 
 ## Features
 
@@ -9,7 +9,7 @@ SmartAgri Water Guard is a Next.js irrigation decision-support app. It uses crop
 - Dashboard gauges, quick stats, and a projected 7-day moisture-versus-water-need chart.
 - Save and review decisions, with an option to clear browser history.
 - Export the current analysis as a PDF report.
-- Email and password account registration and login with HTTP-only sessions.
+- Email and password account registration and login for the current browser.
 - Responsive interface with light and dark themes.
 
 ## Requirements
@@ -28,7 +28,7 @@ npm install
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser. The irrigation dashboard works without external credentials. Configure Supabase below to enable accounts.
+Open [http://localhost:3000](http://localhost:3000) in your browser. No external credentials or account service are required.
 
 For a reproducible install from the committed lockfile, use `npm ci` instead of `npm install`.
 
@@ -74,21 +74,9 @@ Adds a submitted decision to the running server's in-memory history and returns 
 
 The dashboard also saves history in the current browser's local storage, which is what the History page displays. Browser history is limited to the 200 most recent records. The API's in-memory history is temporary and is cleared when the server process restarts; use a persistent database before deploying this as a multi-user service. Accounts do not yet sync or isolate decision history between users.
 
-## Account Setup
+## Accounts
 
-1. Create a project with [Supabase](https://supabase.com/) and enable Email authentication in its Auth settings.
-2. In **Project Settings → API**, copy the project URL and publishable/anon key. Do not use the `service_role` key.
-3. Add these variables to local `.env.local` and your hosting provider's environment settings:
-
-```dotenv
-SUPABASE_URL=https://your-project.supabase.co
-SUPABASE_ANON_KEY=your-supabase-publishable-or-anon-key
-```
-
-4. In Supabase **Authentication → URL Configuration**, set the site URL to your deployed domain and allow your deployed domain and local development URL. Configure email confirmation to suit your launch.
-5. Restart the development server after changing local environment variables.
-
-Password requests are sent from the app's server API to Supabase; this app does not store passwords. Supabase manages accounts and email confirmation. If confirmation is enabled, users must confirm by email before signing in. Missing environment variables produce a clear account configuration error while demo dashboard features remain available.
+Registration and sign-in use this browser's local storage. Create an account from the Register page, then sign in from the same browser and device. Accounts do not sync between browsers/devices, and clearing site data removes them. This client-side demo sign-in is not suitable for protecting sensitive information or multi-user production deployments.
 
 ## Project Structure
 
@@ -97,7 +85,6 @@ app/
   about/                  About page
   api/analyze/            Irrigation analysis endpoint
   api/history/            Demo history endpoint
-  api/auth/[action]/      Supabase-backed registration, login, session and logout endpoints
   dashboard/              Irrigation dashboard
   history/                Saved decisions page
   login/                  Login page
@@ -108,6 +95,7 @@ app/
 components/                Shared UI components
 context/                   Theme context
 lib/
+  auth.js                  Browser-local demo account and session helpers
   crops.js                 Crop data and lookup
   engine.js                Rule-based scoring and trend projection
   storage.js               Browser history storage

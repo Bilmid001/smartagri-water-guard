@@ -4,6 +4,7 @@ import { usePathname } from 'next/navigation';
 import { Sprout, Moon, Sun, Menu, X, ArrowRight } from 'lucide-react';
 import { useTheme } from '@/context/ThemeContext';
 import { useEffect, useState } from 'react';
+import { getCurrentUser, logoutUser } from '@/lib/auth';
 
 const links = [
   { href: '/', label: 'Home' },
@@ -19,14 +20,11 @@ export default function Navbar() {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    fetch('/api/auth/me', { cache: 'no-store' })
-      .then((response) => response.json())
-      .then((data) => setUser(data.user || null))
-      .catch(() => setUser(null));
+    setUser(getCurrentUser());
   }, [pathname]);
 
   async function logout() {
-    await fetch('/api/auth/logout', { method: 'POST' }).catch(() => {});
+    logoutUser();
     setUser(null);
     setOpen(false);
     window.location.assign('/');
