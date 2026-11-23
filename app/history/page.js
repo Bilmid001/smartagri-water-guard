@@ -6,6 +6,7 @@ import { getHistory, clearHistory } from '@/lib/storage';
 import { getCrop } from '@/lib/crops';
 import { Trash2, FileText } from 'lucide-react';
 import { useToast } from '@/components/Toast';
+import RequireAuth from '@/components/RequireAuth';
 
 export default function HistoryPage() {
   const [items, setItems] = useState([]);
@@ -22,7 +23,7 @@ export default function HistoryPage() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+    <RequireAuth><div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <h1 className="text-3xl font-extrabold">Decision History</h1>
@@ -93,6 +94,6 @@ export default function HistoryPage() {
           </div>
         )}
       </Card>
-    </div>
+    </div></RequireAuth>
   );
 }

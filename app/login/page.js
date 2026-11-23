@@ -12,7 +12,8 @@ export default function LoginPage() {
       const result = await response.json();
       if (!response.ok) throw new Error(result.error || 'Unable to sign in.');
       if (result.confirmationRequired) { setInfo(result.message); return; }
-      window.location.assign('/dashboard');
+      const next = new URLSearchParams(window.location.search).get('next');
+      window.location.assign(next && next.startsWith('/') && !next.startsWith('//') ? next : '/dashboard');
     } catch (err) { setError(err.message || 'Unable to reach the sign-in service.'); }
     finally { setBusy(false); }
   }

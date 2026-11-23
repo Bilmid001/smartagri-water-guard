@@ -8,6 +8,7 @@ import { useToast } from '@/components/Toast';
 import Card from '@/components/Card';
 import Gauge from '@/components/Gauge';
 import LoadingSpinner from '@/components/LoadingSpinner';
+import RequireAuth from '@/components/RequireAuth';
 import { Download, Droplets, RefreshCcw, Save, Thermometer, CloudRain, Wind } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 
@@ -108,7 +109,7 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+    <RequireAuth><div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <h1 className="text-3xl font-extrabold">Irrigation Dashboard</h1>
@@ -316,7 +317,7 @@ export default function DashboardPage() {
           <LoadingSpinner />
         </div>
       )}
-    </div>
+    </div></RequireAuth>
   );
 }
 
