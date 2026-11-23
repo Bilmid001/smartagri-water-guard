@@ -1,100 +1,30 @@
 'use client';
 import Link from 'next/link';
-import { Droplets, CloudRain, Leaf, BarChart3, ArrowRight, Sprout } from 'lucide-react';
+import { ArrowRight, BarChart3, CloudSun, Droplets, Leaf, ShieldCheck, Sprout, TrendingDown, Waves } from 'lucide-react';
 
 const features = [
-  { icon: Droplets, title: 'Smart Irrigation Prediction', desc: 'AI-based decision on when and how much to water your crops.' },
-  { icon: CloudRain, title: 'Weather-based Analysis', desc: 'Real-time temperature, humidity and rain probability integration.' },
-  { icon: Leaf, title: 'Crop Water Optimization', desc: 'Tailored water baselines for maize, rice, tomato and cassava.' },
-  { icon: BarChart3, title: 'Farming Insights Dashboard', desc: 'Visual trends, gauges and history for confident decisions.' },
+  { icon: Droplets, title: 'Water with confidence', desc: 'Get an explainable irrigation recommendation from crop needs and field conditions.' },
+  { icon: CloudSun, title: 'Weather-aware decisions', desc: 'Bring temperature, humidity and rain probability into one practical view.' },
+  { icon: BarChart3, title: 'See the whole field', desc: 'Track a seven-day moisture projection, decision history and downloadable reports.' },
 ];
 
+function DashboardPreview() {
+  return <div className="preview-shell">
+    <div className="preview-top"><div><span className="preview-mark"><Sprout size={15}/></span><b>Field overview</b></div><span className="preview-live"><i/> DEMO PREVIEW</span></div>
+    <div className="preview-body">
+      <div className="preview-heading"><div><small>MONDAY, OCTOBER 21</small><h3>Good morning, Amina <span>✳</span></h3><p>Here’s what’s happening across your farm today.</p></div><div className="preview-weather"><CloudSun size={22}/><b>28°</b><span>Partly cloudy</span></div></div>
+      <div className="preview-stats"><div><small>ACTIVE FIELDS</small><b>04 <em>↗ 1 this week</em></b></div><div><small>WATER SAVED</small><b>1,240 <i>litres</i></b></div><div><small>AVG. SOIL MOISTURE</small><b>64<i>%</i></b></div></div>
+      <div className="preview-grid"><div className="preview-chart"><div className="preview-card-title"><span>Moisture &amp; water need</span><span>Next 7 days⌄</span></div><div className="preview-chart-area"><div className="preview-y"><span>100</span><span>75</span><span>50</span><span>25</span></div><svg viewBox="0 0 520 148" preserveAspectRatio="none" aria-label="Seven day water need chart"><path d="M0 45 C60 55 85 69 130 77 S220 104 260 95 S340 117 390 110 S470 133 520 126" fill="none" stroke="#d99a49" strokeWidth="3" strokeDasharray="7 6"/><path d="M0 75 C62 59 91 65 130 51 S216 72 260 47 S343 57 390 36 S468 58 520 29" fill="none" stroke="#308b62" strokeWidth="3"/><path d="M0 75 C62 59 91 65 130 51 S216 72 260 47 S343 57 390 36 S468 58 520 29 L520 148 L0 148Z" fill="url(#fade)" opacity=".28"/><defs><linearGradient id="fade" x1="0" x2="0" y1="0" y2="1"><stop stopColor="#308b62"/><stop offset="1" stopColor="#308b62" stopOpacity="0"/></linearGradient></defs></svg></div><div className="preview-days"><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span></div><div className="preview-legend"><span><i/> Soil moisture</span><span><i/> Crop water need</span></div></div><div className="preview-recommend"><span className="recommend-icon"><Droplets size={18}/></span><small>TODAY’S RECOMMENDATION</small><h4>Water your maize</h4><p>Field North · Maize</p><div className="recommend-meter"><span/></div><div className="recommend-meta"><span>Water need</span><b>68 / 100</b></div><div className="recommend-note"><ShieldCheck size={15}/> Rain chance is low today</div></div></div>
+    </div><div className="preview-foot"><span><i/> Sample dashboard for product illustration</span><Link href="/dashboard">Explore the live dashboard <ArrowRight size={14}/></Link></div>
+  </div>;
+}
+
 export default function Home() {
-  return (
-    <div>
-      {/* HERO */}
-      <section className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-brand-50 via-earth-50 to-brand-100 dark:from-earth-900 dark:via-earth-900 dark:to-brand-900/40" />
-        {/* Animated blobs */}
-        <div className="absolute -top-24 -left-24 w-80 h-80 bg-brand-300/40 dark:bg-brand-700/30 rounded-full blur-3xl animate-float" />
-        <div className="absolute top-40 -right-24 w-96 h-96 bg-earth-300/40 dark:bg-earth-700/30 rounded-full blur-3xl animate-float" style={{ animationDelay: '1.5s' }} />
-        <div className="absolute bottom-0 left-1/3 w-72 h-72 bg-brand-200/40 dark:bg-brand-800/30 rounded-full blur-3xl animate-float" style={{ animationDelay: '3s' }} />
-
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 py-20 md:py-28 grid md:grid-cols-2 gap-10 items-center">
-          <div className="animate-fade-in">
-            <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-600/10 text-brand-700 dark:text-brand-300 text-xs font-semibold uppercase tracking-wider">
-              <Sprout size={14} /> AgriTech MVP
-            </span>
-            <h1 className="mt-5 text-4xl sm:text-5xl md:text-6xl font-extrabold leading-tight tracking-tight">
-              🌾 SmartAgri <span className="text-brand-600">Water Guard</span>
-            </h1>
-            <p className="mt-5 text-lg text-earth-700 dark:text-earth-200 max-w-xl">
-              AI-powered irrigation decision system for smart farming. Know exactly <strong>when</strong> to water, and <strong>how much</strong>.
-            </p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Link href="/dashboard" className="btn-primary text-base px-6 py-3">
-                Get Started <ArrowRight size={18} />
-              </Link>
-              <Link href="/about" className="btn-secondary text-base px-6 py-3">
-                Learn more
-              </Link>
-            </div>
-          </div>
-
-          {/* Hero illustration */}
-          <div className="relative animate-fade-in">
-            <div className="card !p-6 max-w-sm mx-auto rotate-2 hover:rotate-0 transition-transform duration-500">
-              <div className="flex items-center justify-between">
-                <span className="text-sm font-semibold text-earth-500">Field status</span>
-                <span className="text-xs px-2 py-1 rounded-full bg-brand-100 text-brand-700 font-bold">LIVE</span>
-              </div>
-              <div className="mt-4 text-3xl font-extrabold text-brand-600">WATER</div>
-              <div className="text-sm text-earth-600 dark:text-earth-300">Irrigation level: <b>Medium</b></div>
-              <div className="mt-4 grid grid-cols-3 gap-2 text-center text-xs">
-                <div className="p-2 rounded-lg bg-earth-50 dark:bg-earth-900">28°C</div>
-                <div className="p-2 rounded-lg bg-earth-50 dark:bg-earth-900">45%</div>
-                <div className="p-2 rounded-lg bg-earth-50 dark:bg-earth-900">20%</div>
-              </div>
-              <div className="mt-4 h-2 rounded-full bg-earth-100 dark:bg-earth-700 overflow-hidden">
-                <div className="h-full w-2/3 bg-brand-500 animate-pulse-slow" />
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* FEATURES */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 py-16">
-        <div className="text-center max-w-2xl mx-auto">
-          <h2 className="text-3xl sm:text-4xl font-extrabold">Built for modern farms</h2>
-          <p className="mt-3 text-earth-600 dark:text-earth-300">
-            Every feature is designed to save water, boost yield, and reduce guesswork.
-          </p>
-        </div>
-
-        <div className="mt-12 grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {features.map(({ icon: Icon, title, desc }) => (
-            <div key={title} className="card p-6 hover:-translate-y-1">
-              <div className="w-11 h-11 rounded-xl bg-brand-600 text-white flex items-center justify-center shadow-md">
-                <Icon size={20} />
-              </div>
-              <h3 className="mt-4 font-bold text-lg">{title}</h3>
-              <p className="mt-1.5 text-sm text-earth-600 dark:text-earth-300">{desc}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* CTA */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 pb-20">
-        <div className="rounded-3xl bg-gradient-to-r from-brand-600 to-brand-700 text-white p-10 md:p-14 text-center shadow-xl">
-          <h2 className="text-3xl md:text-4xl font-extrabold">Ready to water smarter?</h2>
-          <p className="mt-3 opacity-90">Run your first AI irrigation analysis in under 30 seconds.</p>
-          <Link href="/dashboard" className="mt-6 inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-white text-brand-700 font-bold hover:bg-earth-50 transition">
-            Open Dashboard <ArrowRight size={18} />
-          </Link>
-        </div>
-      </section>
-    </div>
-  );
-}v
+  return <div className="landing">
+    <section className="landing-hero"><div className="hero-photo"/><div className="hero-wash"/><div className="hero-copy"><span className="eyebrow"><Sprout size={15}/> SMART FARMING, MADE PRACTICAL</span><h1>Every drop has a purpose.</h1><p>Make your next watering decision with a clearer picture of your crops, your field conditions and the weather ahead.</p><div className="hero-actions"><Link href="/register" className="hero-button">Start for free <ArrowRight size={17}/></Link><Link href="/dashboard" className="hero-link">Explore the dashboard <span>↗</span></Link></div><div className="hero-proof"><span><ShieldCheck size={16}/> Explainable recommendations</span><span><Waves size={16}/> Water-conscious decisions</span></div></div><div className="hero-caption"><span>01 / A MORE RESILIENT HARVEST</span><span>Tools that grow with your farm</span></div></section>
+    <section className="preview-section"><div className="section-intro"><span className="eyebrow"><BarChart3 size={14}/> YOUR FARM AT A GLANCE</span><h2>Clarity for every field.</h2><p>Turn scattered field conditions into a simple, actionable daily view.</p></div><DashboardPreview/></section>
+    <section className="landing-features"><div className="section-intro"><span className="eyebrow"><Leaf size={14}/> DESIGNED FOR THE REAL WORLD</span><h2>Better decisions start here.</h2><p>Useful tools, clear reasoning, and a lighter footprint on your water supply.</p></div><div className="feature-grid">{features.map(({icon:Icon,title,desc},i)=><article className="feature-card" key={title}><span className="feature-number">0{i+1}</span><div className="feature-icon"><Icon size={20}/></div><h3>{title}</h3><p>{desc}</p></article>)}</div></section>
+    <section className="landing-impact"><div className="impact-photo"/><div className="impact-copy"><span className="eyebrow"><TrendingDown size={14}/> GROW MORE WITH LESS</span><h2>Protect the harvest.<br/>Respect the water.</h2><p>When farmers can see what a crop needs and why, they can make each irrigation cycle count. SmartAgri helps put that insight within reach.</p><Link href="/about" className="hero-link">Our approach <ArrowRight size={15}/></Link></div></section>
+    <section className="landing-cta"><div><span className="eyebrow"><Sprout size={14}/> YOUR NEXT SEASON STARTS NOW</span><h2>Grow with a little more certainty.</h2><p>Create your account and bring your first field into focus.</p></div><Link href="/register" className="hero-button">Create your account <ArrowRight size={17}/></Link></section>
+  </div>;
+}
