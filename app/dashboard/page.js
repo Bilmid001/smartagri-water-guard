@@ -1,15 +1,16 @@
 'use client';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import dynamic from 'next/dynamic';
 import { CROPS } from '@/lib/crops';
 import { analyzeIrrigation, projectTrend } from '@/lib/engine';
 import { addHistory } from '@/lib/storage';
+import { getFarmGuidance, GUIDANCE_LANGUAGES } from '@/lib/guidance';
 import { useToast } from '@/components/Toast';
 import Card from '@/components/Card';
 import Gauge from '@/components/Gauge';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import RequireAuth from '@/components/RequireAuth';
-import { Download, Droplets, RefreshCcw, Save, Thermometer, CloudRain, Wind } from 'lucide-react';
+import { Download, Droplets, RefreshCcw, Save, Thermometer, CloudRain, Wind, Volume2, Square } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 
 const DecisionBadge = dynamic(() => Promise.resolve(({ decision }) => (
@@ -28,6 +29,8 @@ export default function DashboardPage() {
   const [location, setLocation] = useState('');
   const [saving, setSaving] = useState(false);
   const [analyzing, setAnalyzing] = useState(false);
+  const [language, setLanguage] = useState('en');
+  const [speaking, setSpeaking] = useState(false);
 
   const result = useMemo(() => {
     return analyzeIrrigation({ crop, temperature, humidity, rainProbability });
@@ -37,6 +40,37 @@ export default function DashboardPage() {
     () => projectTrend({ crop, temperature, humidity, rainProbability }),
     [crop, temperature, humidity, rainProbability]
   );
+  const guidance = useMemo(() => getFarmGuidance({
+    language, crop: CROPS.find((item) => item.id === crop)?.name || crop,
+    score: result.score, level: result.level, rainProbability, temperature, humidity, decision: result.decision,
+  }), [language, crop, result, rainProbability, temperature, humidity]);
+
+  const speakGuidance = useCallback(() => {
+    if (!('speechSynthesis' in window)) {
+      push('Spoken advice is not available in this browser. You can still read the guidance below.', 'error');
+      return;
+    }
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(`${guidance.advice} ${guidance.title}. ${guidance.waterRisk}. ${guidance.skipped} ${guidance.excessRisk}. ${guidance.excess}`);
+    utterance.lang = GUIDANCE_LANGUAGES.find((item) => item.id === language)?.voice || 'en-NG';
+    const voices = window.speechSynthesis.getVoices();
+    const languagePrefix = utterance.lang.split('-')[0];
+    const voice = voices.find((item) => item.lang.toLowerCase() === utterance.lang.toLowerCase()) || voices.find((item) => item.lang.toLowerCase().startsWith(languagePrefix));
+    if (voice) utterance.voice = voice;
+    utterance.onstart = () => setSpeaking(true);
+    utterance.onend = () => setSpeaking(false);
+    utterance.onerror = () => setSpeaking(false);
+    window.speechSynthesis.speak(utterance);
+  }, [guidance, language, push]);
+
+  const stopSpeaking = () => {
+    if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+    setSpeaking(false);
+  };
+
+  useEffect(() => () => {
+    if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+  }, []);
 
   // Simulate brief analysis pulse when inputs change
   useEffect(() => {
@@ -58,6 +92,7 @@ export default function DashboardPage() {
       } catch {}
       addHistory({ crop, temperature, humidity, rainProbability, location, ...result });
       push('Decision saved to history ✅', 'success');
+      speakGuidance();
     } catch {
       push('Failed to save decision', 'error');
     } finally {
@@ -247,6 +282,20 @@ export default function DashboardPage() {
                 </div>
                 <p className="text-sm text-earth-700 dark:text-earth-200">{result.explanation}</p>
               </div>
+              <div className="rounded-xl border border-brand-100 dark:border-earth-600 bg-brand-50 dark:bg-earth-900/60 p-4 space-y-3">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <label className="text-sm font-semibold" htmlFor="advice-language">{guidance.language}</label>
+                  <select id="advice-language" value={language} onChange={(event) => { setLanguage(event.target.value); stopSpeaking(); }} className="input !w-auto !py-2">
+                    {GUIDANCE_LANGUAGES.map((item) => <option key={item.id} value={item.id}>{item.label}</option>)}
+                  </select>
+                </div>
+                <p className="text-sm leading-6 text-earth-700 dark:text-earth-200">{guidance.advice}</p>
+                <button type="button" onClick={speaking ? stopSpeaking : speakGuidance} className="btn-primary">
+                  {speaking ? <Square size={16} /> : <Volume2 size={17} />}
+                  {speaking ? guidance.stop : guidance.speak}
+                </button>
+                <p className="text-xs text-earth-600 dark:text-earth-300">Spoken advice uses voices installed in your browser or device. If a local language voice is unavailable, the advice remains available to read.</p>
+              </div>
             </div>
 
             <div className="flex justify-center">
@@ -268,6 +317,21 @@ export default function DashboardPage() {
           </div>
         </Card>
       </div>
+
+      <Card className="mt-6">
+        <h2 className="font-bold text-lg mb-1">🌱 {guidance.title}</h2>
+        <p className="text-sm text-earth-600 dark:text-earth-300 mb-4">Small, timely adjustments can help protect your harvest. These are possible risks, not a prediction of what will happen to your field.</p>
+        <div className="grid sm:grid-cols-2 gap-4">
+          <div className="rounded-xl bg-amber-50 dark:bg-amber-950/30 border border-amber-100 dark:border-amber-900 p-4">
+            <h3 className="font-semibold text-sm mb-2">{guidance.waterRisk}</h3>
+            <p className="text-sm leading-6 text-earth-700 dark:text-earth-200">{guidance.skipped}</p>
+          </div>
+          <div className="rounded-xl bg-sky-50 dark:bg-sky-950/30 border border-sky-100 dark:border-sky-900 p-4">
+            <h3 className="font-semibold text-sm mb-2">{guidance.excessRisk}</h3>
+            <p className="text-sm leading-6 text-earth-700 dark:text-earth-200">{guidance.excess}</p>
+          </div>
+        </div>
+      </Card>
 
       {/* VISUALIZATION */}
       <div className="mt-6 grid lg:grid-cols-3 gap-6">
