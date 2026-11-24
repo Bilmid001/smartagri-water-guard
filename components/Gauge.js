@@ -15,8 +15,9 @@ export default function Gauge({ value = 0, level = 'LOW' }) {
     '#16a34a';
 
   return (
-    <div className="flex flex-col items-center">
-      <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} className="-rotate-[135deg]">
+    <div className="flex w-full justify-center overflow-visible">
+      <div className="relative h-[200px] w-[200px] shrink-0">
+      <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} className="absolute inset-0 -rotate-[135deg]">
         <circle
           cx={size / 2} cy={size / 2} r={r}
           fill="none" stroke="currentColor"
@@ -34,15 +35,16 @@ export default function Gauge({ value = 0, level = 'LOW' }) {
           style={{ transition: 'stroke-dasharray 0.8s ease, stroke 0.4s ease' }}
         />
       </svg>
-      <div className="-mt-24 text-center pointer-events-none">
-        <div className="text-4xl font-extrabold" style={{ color }}>{pct}%</div>
-        <div className="text-xs uppercase tracking-wider text-earth-500 dark:text-earth-300 font-semibold mt-1">
+      <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center pt-2 text-center">
+        <div className="text-4xl font-extrabold leading-none" style={{ color }}>{pct}%</div>
+        <div className="mt-2 text-[11px] leading-tight uppercase tracking-wider text-earth-500 dark:text-earth-300 font-semibold">
           Water Need
         </div>
-        <div className="mt-2 inline-block px-3 py-0.5 rounded-full text-xs font-bold"
+        <div className="mt-2 inline-block rounded-full px-3 py-1 text-[10px] leading-tight font-bold"
              style={{ background: `${color}20`, color }}>
           {level} IRRIGATION
         </div>
+      </div>
       </div>
     </div>
   );
